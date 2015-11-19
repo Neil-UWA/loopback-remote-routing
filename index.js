@@ -22,6 +22,15 @@ module.exports  = function(Model, options) {
     'updateAll'
   ]
 
+  if (Model.modelName === 'User' || Model.base.modelName === 'User') {
+    isStatic = _(isStatic).concat([
+      'login',
+      'logout',
+      'confirm',
+      'resetPassword']).value();
+  }
+
+
   var nonStatic = getNonStaticMethods(Model);
 
   if (options.only && options.only.length) {
