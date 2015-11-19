@@ -39,11 +39,11 @@ module.exports  = function(Model, options) {
     });
   }
 
-  isStatic.forEach(method=>{
+  isStatic.forEach(function(method){
     Model.disableRemoteMethod(method, true);
   });
 
-  nonStatic.forEach(method=>{
+  nonStatic.forEach(function(method){
     Model.disableRemoteMethod(method, false);
   });
 }
