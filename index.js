@@ -1,14 +1,11 @@
 var _ = require('lodash');
 
-module.exports  = function(Model, options) {
-  var nonStatic = [];
+  //options : {only: [], except: []}
   //only: only expose specified methods, disable others
   //except: expose all methods, except specified ones
-  options = {
-    only: [],
-    except: []
-  }
 
+module.exports  = function(Model, options) {
+  var nonStatic = [];
   var isStatic =[
     'create',
     'upsert',
