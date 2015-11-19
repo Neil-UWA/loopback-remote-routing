@@ -1,6 +1,6 @@
 {
   "name": "loopback-remote-routing",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "easily disable remote methods",
   "main": "index.js",
   "scripts": {
