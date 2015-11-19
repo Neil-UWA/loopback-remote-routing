@@ -1,10 +1,12 @@
+var _ = require('lodash');
+
 module.exports  = function(Model, options) {
-  var relations = Model.definition.settings.relations;
   var nonStatic = [];
+  //only: only expose specified methods, disable others
+  //except: expose all methods, except specified ones
   options = {
     only: [],
-    except: [],
-    custom: []
+    except: []
   }
 
   var isStatic =[
@@ -21,6 +23,21 @@ module.exports  = function(Model, options) {
   ]
 
   var nonStatic = getNonStaticMethods(Model);
+
+  if (options.only && options.only.length) {
+    isStatic = _.difference(isStatic, options.only);
+    nonStatic = _.difference(nonStatic, options.only);
+  }
+
+  if (options.except && options.except.length) {
+    isStatic = _.filter(isStatic, function(method){
+      return _.includes(options.except, method);
+    });
+
+    nonStatic = _.filter(nonStatic, function(method){
+      return _.includes(options.except, method);
+    });
+  }
 
   isStatic.forEach(method=>{
     Model.disableRemoteMethod(method, true);
