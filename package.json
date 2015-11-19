@@ -20,5 +20,8 @@
   "bugs": {
     "url": "https://github.com/Neil-UWA/loopback-remote-routing/issues"
   },
-  "homepage": "https://github.com/Neil-UWA/loopback-remote-routing#readme"
+  "homepage": "https://github.com/Neil-UWA/loopback-remote-routing#readme",
+  "dependencies": {
+    "lodash": "^3.10.1"
+  }
 }
