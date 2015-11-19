@@ -23,5 +23,13 @@
   "homepage": "https://github.com/Neil-UWA/loopback-remote-routing#readme",
   "dependencies": {
     "lodash": "^3.10.1"
+  },
+  "devDependencies": {
+    "chai": "^3.4.1",
+    "loopback": "^2.25.0",
+    "loopback-datasource-juggler": "^2.41.2",
+    "mocha": "^2.3.4",
+    "sinon": "^1.17.2",
+    "supertest": "^1.1.0"
   }
 }
