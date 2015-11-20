@@ -3,61 +3,58 @@ var _ = require('lodash');
 //options : {only: [], except: []}
 //only: only expose specified methods, disable others
 //except: expose all methods, except specified ones
+// symbol @ donates the method is static
 
 module.exports  = function(Model, options) {
-  var nonStatic = [];
-  var isStatic =[
-    'create',
-    'upsert',
-    'exists',
-    'findById',
-    'deleteById',
-    'count',
-    'find',
-    'findOne',
-    'createChangeStream',
-    'updateAll'
+  var methods =[
+    '@create',
+    '@upsert',
+    '@exists',
+    '@findById',
+    '@deleteById',
+    '@count',
+    '@find',
+    '@findOne',
+    '@createChangeStream',
+    '@updateAll',
+    'updateAttributes'
   ]
 
   if (Model.modelName === 'User' || Model.base.modelName === 'User') {
-    isStatic = _(isStatic).concat([
-      'login',
-      'logout',
-      'confirm',
-      'resetPassword']).value();
+    methods = _(methods).concat([
+      '@login',
+      '@logout',
+      '@confirm',
+      '@resetPassword']).value();
   }
 
-  var nonStatic = getNonStaticMethods(Model);
+  methods = methods.concat(getRelationMethods(Model));
+
   if (options.only && options.only.length) {
-    isStatic = _.difference(isStatic, options.only);
-    nonStatic = _.difference(nonStatic, options.only);
+    methods = _.difference(methods, options.only);
   }
 
   if (options.except && options.except.length) {
-    isStatic = _.filter(isStatic, function(method){
-      return _.includes(options.except, method);
-    });
-
-    nonStatic = _.filter(nonStatic, function(method){
+    methods = _.filter(methods, function(method){
       return _.includes(options.except, method);
     });
   }
 
   //always disable changeStream related endpoints
-  isStatic.push('createChangeStream');
+  methods.push('@createChangeStream');
 
-  isStatic.forEach(function(method){
-    Model.disableRemoteMethod(method, true);
-  });
-
-  nonStatic.forEach(function(method){
-    Model.disableRemoteMethod(method, false);
+  methods.forEach(function(method){
+    if (/^@/.test(method)) {
+      Model.disableRemoteMethod(method.replace(/^@/, ''), true);
+    } else {
+      Model.disableRemoteMethod(method, false);
+    }
   });
 }
 
-function getNonStaticMethods(Model) {
+function getRelationMethods(Model) {
   var relations = Model.definition.settings.relations;
-  var remoteMethods = ['updateAttributes'];
+  var remoteMethods = [];
 
   if (!relations) return remoteMethods;
 

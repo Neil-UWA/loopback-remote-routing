@@ -3,9 +3,9 @@ var RemoteRouting = require('../index.js');
 var expect  = require('chai').expect;
 var sinon = require('sinon');
 var app = loopback();
+var _ = require('lodash');
 
 app.set('legacyExplorer', false)
-
 app.use(loopback.rest());
 
 describe('RemoteRouting', function(){
@@ -14,38 +14,40 @@ describe('RemoteRouting', function(){
   var db = null;
   var remoteEndpoints = null;
 
-  db = app.dataSource('db', {adapter: 'memory'});
+  beforeEach(function(){
+    db = app.dataSource('db', {adapter: 'memory'});
 
-  Color = app.model('color', {name: String, relations: {
-    palatee: {
-      type: 'belongsTo',
-      model: 'palatee'
-    }
-  }});
+    Color = app.model('color', {name: String, relations: {
+      palatee: {
+        type: 'belongsTo',
+        model: 'palatee'
+      }
+    }});
 
-  Palatee = app.model('palatee', {name: String, relations: {
-    colors: {
-      type: 'hasMany',
-      model: 'color'
-    }
-  }});
+    Palatee = app.model('palatee', {name: String, relations: {
+      colors: {
+        type: 'hasMany',
+        model: 'color'
+      }
+    }});
 
-  db.attach(Color);
-  db.attach(Palatee);
+    db.attach(Color);
+    db.attach(Palatee);
+  });
 
   describe('only option', function(){
     it('should only expose specified remote methods', function(){
-      RemoteRouting(Color, {only: ['create']});
+      RemoteRouting(Color, {only: ['@create']});
       expect(getModelRest(Color).length).to.eql(1);
     });
   });
 
   describe('expect option', function(){
     it('should expose all remote methods except specified ones', function(){
-      RemoteRouting(Color, {except: ['create', 'find']});
+      RemoteRouting(Color, {except: ['@create', '@find']});
       getModelRest(Color).forEach(function(endpoint){
-        expect(endpoint.method).to.not.contain('color.create')
-        expect(endpoint.method).to.not.contain('color.find')
+        expect(endpoint.method).to.not.eql('color.create')
+        expect(endpoint.method).to.not.eql('color.find')
       })
     });
   });
