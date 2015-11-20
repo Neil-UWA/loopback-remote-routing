@@ -3,7 +3,7 @@ var _ = require('lodash');
 //options : {only: [], except: []}
 //only: only expose specified methods, disable others
 //except: expose all methods, except specified ones
-// symbol @ donates the method is static
+//symbol @ donates the method is static
 
 module.exports  = function(Model, options) {
   options = options || {};
@@ -41,9 +41,6 @@ module.exports  = function(Model, options) {
       return _.includes(options.except, method);
     });
   }
-
-  //always disable changeStream related endpoints
-  methods.push('@createChangeStream');
 
   methods.forEach(function(method){
     if (/^@/.test(method)) {

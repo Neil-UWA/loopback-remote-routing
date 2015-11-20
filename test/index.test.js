@@ -11,43 +11,64 @@ describe('RemoteRouting', function(){
   var Color = null;
   var Palatee = null;
   var db = null;
-  var remoteEndpoints = null;
+  var allColorRoutes = null;
 
   beforeEach(function(){
     db = app.dataSource('db', {adapter: 'memory'});
 
-    Color = app.model('color', {name: String, relations: {
-      palatee: {
-        type: 'belongsTo',
-        model: 'palatee'
-      }
-    }});
+    Color = app.model('color', {
+      name: String,
+      relations: {
+        palatee: {
+          type: 'belongsTo',
+          model: 'palatee'
+        }
+      },
+      dataSource: 'db'
+    });
 
-    Palatee = app.model('palatee', {name: String, relations: {
-      colors: {
-        type: 'hasMany',
-        model: 'color'
-      }
-    }});
+    Palatee = app.model('palatee', {
+      name: String,
+      relations: {
+        colors: {
+          type: 'hasMany',
+          model: 'color'
+        }
+      },
+      dataSource: 'db'
+    });
 
-    db.attach(Color);
-    db.attach(Palatee);
+    app.model(Color);
+    app.model(Palatee);
+
+    allColorRoutes = getModelRest(Color);
   });
 
   describe('only option', function(){
-    it('should only expose specified remote methods', function(){
+    beforeEach(function(){
       RemoteRouting(Color, {only: ['@create']});
-      expect(getModelRest(Color).length).to.eql(1);
+    });
+
+    it('should only expose specified remote methods', function(){
+      var colorRoutes = getModelRest(Color);
+      expect(colorRoutes.length).to.eql(1);
+      expect(colorRoutes[0].method).to.eql('color.create');
     });
   });
 
   describe('expect option', function(){
-    it('should expose all remote methods except specified ones', function(){
+    beforeEach(function(){
       RemoteRouting(Color, {except: ['@create', '@find']});
-      getModelRest(Color).forEach(function(endpoint){
-        expect(endpoint.method).to.not.eql('color.create')
-        expect(endpoint.method).to.not.eql('color.find')
-      })
+    });
+
+    it('should expose all remote methods except specified ones', function(){
+      var colorRoutes = getModelRest(Color);
+      expect(allColorRoutes.length - colorRoutes.length).to.eql(2);
+      colorRoutes.forEach(function(endpoint){
+        expect(endpoint.method).to.satisfy(function(method){
+          return method !== 'color.create' && method !== 'colore.find';
+        })
+      });
     });
   });
 
