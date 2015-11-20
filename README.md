@@ -17,21 +17,22 @@ var RemoteRouting = require('loopback-remote-routing');
 
 module.exports = function(Color) {
   // use only to expose specified remote methods
+  // symbol @ denotes static method
   RemoteRouting(Color, {only: [
     '@find',
     '@findById',
     'updateAttributes'
   ]})
-  
+
   //use except to expose all remote methods except specified ones
   RemoteRouting(Color, {except: [
     '@create',
     '@find'
   ]}
-  
+
   //disable all remote methods omitting options
-  
+
   RemoteRouting(Color)
 }
 ```
-you can only use options.only or options.except, do not mix using them.
+you can only use options.only or options.except, do not use them together.
