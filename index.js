@@ -1,8 +1,8 @@
 var _ = require('lodash');
 
-  //options : {only: [], except: []}
-  //only: only expose specified methods, disable others
-  //except: expose all methods, except specified ones
+//options : {only: [], except: []}
+//only: only expose specified methods, disable others
+//except: expose all methods, except specified ones
 
 module.exports  = function(Model, options) {
   var nonStatic = [];
@@ -12,10 +12,10 @@ module.exports  = function(Model, options) {
     'exists',
     'findById',
     'deleteById',
-    'createChangeStream',
     'count',
     'find',
     'findOne',
+    'createChangeStream',
     'updateAll'
   ]
 
@@ -27,9 +27,7 @@ module.exports  = function(Model, options) {
       'resetPassword']).value();
   }
 
-
   var nonStatic = getNonStaticMethods(Model);
-
   if (options.only && options.only.length) {
     isStatic = _.difference(isStatic, options.only);
     nonStatic = _.difference(nonStatic, options.only);
@@ -45,6 +43,9 @@ module.exports  = function(Model, options) {
     });
   }
 
+  //always disable changeStream related endpoints
+  isStatic.push('createChangeStream');
+
   isStatic.forEach(function(method){
     Model.disableRemoteMethod(method, true);
   });
@@ -57,6 +58,9 @@ module.exports  = function(Model, options) {
 function getNonStaticMethods(Model) {
   var relations = Model.definition.settings.relations;
   var remoteMethods = ['updateAttributes'];
+
+  if (!relations) return remoteMethods;
+
   var hasManyPrefixs = [
     '__create__',
     '__get__',
@@ -85,20 +89,17 @@ function getNonStaticMethods(Model) {
     switch(relations[targetModel].type) {
     case 'hasMany':
     case 'hasAndBelongsToMany':
-      hasManyPrefixs.forEach(function(prefix){
-        remoteMethods.push(prefix+targetModel);
-      });
+      hasManyPrefixs.forEach(disableIt);
       break;
     case 'hasOne':
-      hasOnePrefixs.forEach(function(prefix){
-        remoteMethods.push(prefix+targetModel);
-      });
+      hasOnePrefixs.forEach(disableIt);
       break;
     case 'belongsTo':
-      belongsToPrefixs.forEach(function(prefix){
-        remoteMethods.push(prefix+targetModel);
-      });
+      belongsToPrefixs.forEach(disableIt);
       break;
+    }
+    function disableIt(prefix) {
+      remoteMethods.push(prefix+targetModel);
     }
   })
 
