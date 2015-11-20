@@ -6,6 +6,8 @@ var _ = require('lodash');
 // symbol @ donates the method is static
 
 module.exports  = function(Model, options) {
+  options = options || {};
+
   var methods =[
     '@create',
     '@upsert',
