@@ -1,4 +1,5 @@
 # loopback-remote-routing
+[![Circle CI](https://circleci.com/gh/Neil-UWA/loopback-remote-routing/tree/master.svg?style=svg)](https://circleci.com/gh/Neil-UWA/loopback-remote-routing/tree/master)
 
 Easily disable remote methods.
 
