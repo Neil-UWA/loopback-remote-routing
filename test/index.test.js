@@ -10,6 +10,7 @@ app.use(loopback.rest());
 describe('RemoteRouting', function(){
   var Color = null;
   var Palatee = null;
+  var PalateeColor = null;
   var db = null;
   var allColorRoutes = null;
 
@@ -22,10 +23,37 @@ describe('RemoteRouting', function(){
         palatee: {
           type: 'belongsTo',
           model: 'palatee'
+        },
+        colorWheels: {
+          type: 'hasMany',
+          model: 'palatee',
+          through: 'PalateeColor'
+        },
+        dazzleColor: {
+          type: 'hasOne',
+          model: 'color'
+        },
+        nightPalatee: {
+          type: 'hasAndBelongsToMany',
+          model: 'palatee'
         }
       },
       dataSource: 'db'
     });
+
+    PalateeColor = app.model('PalateeColor', {
+      relations: {
+        color: {
+          type: 'belongsTo',
+          model: 'color'
+        },
+        palatee: {
+          type: 'belongsTo',
+          model: 'palatee'
+        }
+      },
+      dataSource: 'db'
+    })
 
     Palatee = app.model('palatee', {
       name: String,
@@ -33,12 +61,22 @@ describe('RemoteRouting', function(){
         colors: {
           type: 'hasMany',
           model: 'color'
+        },
+        awesomeColors: {
+          type: 'hasMany',
+          model: 'color',
+          through: 'PalateeColor'
+        },
+        nightColors: {
+          type: 'hasAndBelongsToMany',
+          model: 'color'
         }
       },
       dataSource: 'db'
     });
 
     app.model(Color);
+    app.model(PalateeColor);
     app.model(Palatee);
 
     allColorRoutes = getModelRest(Color);
@@ -46,13 +84,16 @@ describe('RemoteRouting', function(){
 
   describe('only option', function(){
     beforeEach(function(){
-      RemoteRouting(Color, {only: ['@create']});
+      RemoteRouting(Color, {only: ['@create', '__get__colorWheels']});
     });
 
     it('should only expose specified remote methods', function(){
       var colorRoutes = getModelRest(Color);
-      expect(colorRoutes.length).to.eql(1);
-      expect(colorRoutes[0].method).to.eql('color.create');
+      var remoteMethods = colorRoutes.map(function(router){
+        return router.method;
+      });
+      expect(colorRoutes.length).to.eql(2);
+      expect(remoteMethods).to.have.members([ 'color.create',  'color.prototype.__get__colorWheels'])
     });
   });
 
