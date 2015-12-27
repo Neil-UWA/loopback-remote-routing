@@ -12,6 +12,7 @@ npm install loopback-remote-routing --save
 ##How to use
 
 ```js
+Works with embeded relations now
 
 // common/models/color.js
 var RemoteRouting = require('loopback-remote-routing');
