@@ -7,6 +7,7 @@ var _ = require('lodash');
 app.set('legacyExplorer', false)
 app.use(loopback.rest());
 
+//WIP more tests
 describe('RemoteRouting', function(){
   var Color = null;
   var Palatee = null;
@@ -36,6 +37,18 @@ describe('RemoteRouting', function(){
         nightPalatee: {
           type: 'hasAndBelongsToMany',
           model: 'palatee'
+        },
+        embededColor: {
+          type: 'embedsOne',
+          model: 'color'
+        },
+        rgbColor: {
+          type: 'embedsMany',
+          model: 'color'
+        },
+        linkedColors: {
+          type: 'referencesMany',
+          model: 'color'
         }
       },
       dataSource: 'db'
@@ -75,16 +88,16 @@ describe('RemoteRouting', function(){
       dataSource: 'db'
     });
 
-    app.model(Color);
-    app.model(PalateeColor);
-    app.model(Palatee);
-
     allColorRoutes = getModelRest(Color);
   });
 
   describe('only option', function(){
     beforeEach(function(){
-      RemoteRouting(Color, {only: ['@create', '__get__colorWheels']});
+      RemoteRouting(Color, {only: [
+        '@create',
+        '__get__colorWheels',
+        '__get__embededColor'
+      ]});
     });
 
     it('should only expose specified remote methods', function(){
@@ -92,8 +105,12 @@ describe('RemoteRouting', function(){
       var remoteMethods = colorRoutes.map(function(router){
         return router.method;
       });
-      expect(colorRoutes.length).to.eql(2);
-      expect(remoteMethods).to.have.members([ 'color.create',  'color.prototype.__get__colorWheels'])
+      expect(colorRoutes.length).to.eql(3);
+      expect(remoteMethods).to.have.members([
+        'color.create',
+        'color.prototype.__get__colorWheels',
+        'color.prototype.__get__embededColor'
+      ])
     });
   });
 
