@@ -5,7 +5,7 @@ var _ = require('lodash');
 //except: expose all methods, except specified ones
 //symbol @ donates the method is static
 
-module.exports  = function(Model, options) {
+module.exports  = function RemoteRouting(Model, options) {
   options = options || {};
 
   var methods =[
@@ -52,12 +52,27 @@ module.exports  = function(Model, options) {
 }
 
 function getRelationMethods(Model) {
-  var relations = Model.definition.settings.relations;
   var remoteMethods = [];
+  var hasManyPrefixs;
+  var hasOnePrefixs;
+  var belongsToPrefixs;
+  var embedsManyPrefixs;
+
+  var relations = Model.definition.settings.relations;
 
   if (!relations) return remoteMethods;
 
-  var hasManyPrefixs = [
+  embedsManyPrefixs = [
+    '__create__',
+    '__get__',
+    '__delete__',
+    '__findById__',
+    '__updateById__',
+    '__destroyById__',
+    '__count__'
+  ];
+
+  hasManyPrefixs = [
     '__create__',
     '__get__',
     '__delete__',
@@ -70,23 +85,28 @@ function getRelationMethods(Model) {
     '__unlink__'
   ];
 
-  var hasOnePrefixs = [
+  hasOnePrefixs = [
     '__create__',
     '__get__',
     '__update__',
     '__destroy__'
   ];
 
-  var belongsToPrefixs = [
+  belongsToPrefixs = [
     '__get__'
   ];
 
   Object.keys(relations).forEach(function(targetModel){
     switch(relations[targetModel].type) {
     case 'hasMany':
+    case 'referencesMany':
     case 'hasAndBelongsToMany':
       hasManyPrefixs.forEach(disableIt);
       break;
+    case 'embedsMany':
+      embedsManyPrefixs.forEach(disableIt);
+      break;
+    case 'embedsOne':
     case 'hasOne':
       hasOnePrefixs.forEach(disableIt);
       break;
