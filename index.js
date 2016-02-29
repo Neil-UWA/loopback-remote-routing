@@ -1,5 +1,5 @@
 var _ = require('lodash');
-var getRemoteMethods = require('./util.js');
+var getRemoteMethods = require('./lib/util.js');
 
 //options : {only: [], except: []}
 //only: only expose specified methods, disable others
