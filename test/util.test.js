@@ -1,4 +1,5 @@
 var getRemoteMethods = require('../lib/util.js');
+var prefixes = require('../lib/prefixes.js');
 var expect = require('chai').expect;
 
 describe('getRemoteMethods', function() {
@@ -127,111 +128,62 @@ describe('getRemoteMethods', function() {
 
   describe('belongsTo', function() {
     it('returns remoteMethods for belongsTo relation', function() {
-      expect(getRemoteMethods(Product)).to.eql([
-        '__get__shop'
-      ])
+      var remoteMethods = prefixes.belongsTo.map(remoteMethod.bind(null, 'shop'));
+      expect(getRemoteMethods(Product)).to.eql(remoteMethods);
     });
   });
 
   describe('hasOne', function() {
     it('returns remoteMethods for hasOne relation', function() {
-      expect(getRemoteMethods(ShopOwner)).to.eql([
-        '__create__shop',
-        '__get__shop',
-        '__update__shop',
-        '__destroy__shop'
-      ])
+      var remoteMethods = prefixes.hasOne.map(remoteMethod.bind(null, 'shop'));
+      expect(getRemoteMethods(ShopOwner)).to.eql(remoteMethods);
     });
   });
 
   describe('hasMany', function() {
     it('returns remoteMethods for hasMany relation', function() {
-      expect(getRemoteMethods(Shop)).to.eql([
-        '__count__products',
-        '__create__products',
-        '__delete__products',
-        '__destroyById__products',
-        '__findById__products',
-        '__get__products',
-        '__updateById__products'
-      ])
+      var remoteMethods = prefixes.hasMany.map(remoteMethod.bind(null, 'products'));
+      expect(getRemoteMethods(Shop)).to.eql(remoteMethods);
     });
   });
 
   describe('hasManyThrough', function() {
     it('returns remoteMethods for hasManyThrough relation', function() {
-      expect(getRemoteMethods(Customer)).to.eql([
-        '__exists__collected_products',
-        '__link__collected_products',
-        '__unlink__collected_products',
-        '__count__collected_products',
-        '__create__collected_products',
-        '__delete__collected_products',
-        '__destroyById__collected_products',
-        '__findById__collected_products',
-        '__get__collected_products',
-        '__updateById__collected_products'
-      ])
+      var remoteMethods = prefixes.hasManyThrough.map(remoteMethod.bind(null, 'collected_products'));
+      expect(getRemoteMethods(Customer)).to.eql(remoteMethods);
     });
   });
 
   describe('hasAndBelongsToMany', function() {
     it('returns remoteMethods for hasAndBelongsToMany relation', function() {
-      expect(getRemoteMethods(Category)).to.eql([
-        '__exists__tags',
-        '__link__tags',
-        '__unlink__tags',
-        '__count__tags',
-        '__create__tags',
-        '__delete__tags',
-        '__destroyById__tags',
-        '__findById__tags',
-        '__get__tags',
-        '__updateById__tags'
-      ])
+      var remoteMethods = prefixes.hasAndBelongsToMany.map(remoteMethod.bind(null, 'tags'));
+      expect(getRemoteMethods(Category)).to.eql(remoteMethods);
     });
   });
 
   describe('embedsOne', function() {
     it('returns remoteMethods for embedsOne relation', function() {
-      expect(getRemoteMethods(Item)).to.eql([
-        '__create__slug',
-        '__get__slug',
-        '__update__slug',
-        '__destroy__slug'
-      ])
+      var remoteMethods = prefixes.embedsOne.map(remoteMethod.bind(null, 'slug'));
+      expect(getRemoteMethods(Item)).to.eql(remoteMethods);
     });
   });
 
   describe('embedsMany', function() {
     it('returns remoteMethods for embedsMany relation', function() {
-      expect(getRemoteMethods(User)).to.eql([
-        '__create__addresses',
-        '__get__addresses',
-        '__delete__addresses',
-        '__findById__addresses',
-        '__updateById__addresses',
-        '__destroyById__addresses',
-        '__count__addresses'
-      ])
+      var remoteMethods = prefixes.embedsMany.map(remoteMethod.bind(null, 'addresses'));
+      expect(getRemoteMethods(User)).to.eql(remoteMethods);
     });
   });
 
   describe('referencesMany', function() {
     it('returns remoteMethods for referencesMany relation', function() {
-      expect(getRemoteMethods(Palatee)).to.eql([
-        '__exists__colors',
-        '__link__colors',
-        '__unlink__colors',
-        '__count__colors',
-        '__create__colors',
-        '__delete__colors',
-        '__destroyById__colors',
-        '__findById__colors',
-        '__get__colors',
-        '__updateById__colors'
-      ])
+      var remoteMethods = prefixes.referencesMany.map(remoteMethod.bind(null, 'colors'));
+      expect(getRemoteMethods(Palatee)).to.eql(remoteMethods);
     });
   });
+
+  function remoteMethod (target, prefix) {
+    return [prefix, target].join('');
+  }
 
 });
