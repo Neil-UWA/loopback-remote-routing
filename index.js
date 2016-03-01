@@ -1,5 +1,5 @@
 var _ = require('lodash');
-var getRemoteMethods = require('./lib/util.js');
+var RemoteMethods = require('./lib/remote-methods.js');
 
 //options : {only: [], except: []}
 //only: only expose specified methods, disable others
@@ -31,7 +31,7 @@ module.exports  = function RemoteRouting(Model, options) {
       '@resetPassword']).value();
   }
 
-  methods = methods.concat(getRemoteMethods(Model));
+  methods = methods.concat(RemoteMethods(Model));
 
   if (options.only && options.only.length) {
     methods = _.difference(methods, options.only);

@@ -1,8 +1,10 @@
-var getRemoteMethods = require('../lib/util.js');
-var prefixes = require('../lib/prefixes.js');
+var RemoteMethods = require('../../lib/remote-methods.js');
+var prefixes = require('../../lib/prefixes.js');
 var expect = require('chai').expect;
+var app = require('loopback')();
 
-describe('getRemoteMethods', function() {
+describe('RemoteMethods', function() {
+
   var Product = {
     modelName: 'product',
     definition: { settings: {
@@ -117,6 +119,10 @@ describe('getRemoteMethods', function() {
 
   var Comment = {
     modelName: 'comment',
+    __get__latest_comments: function() {},
+    __create__latest_comments: function() {},
+    __count__latest_comments: function() {},
+    __delete__latest_comments: function() {},
     definition: { settings: {
       scopes:  {
         latest_comments: {
@@ -129,56 +135,64 @@ describe('getRemoteMethods', function() {
   describe('belongsTo', function() {
     it('returns remoteMethods for belongsTo relation', function() {
       var remoteMethods = prefixes.belongsTo.map(remoteMethod.bind(null, 'shop'));
-      expect(getRemoteMethods(Product)).to.eql(remoteMethods);
+      expect(RemoteMethods(Product)).to.eql(remoteMethods);
     });
   });
 
   describe('hasOne', function() {
     it('returns remoteMethods for hasOne relation', function() {
       var remoteMethods = prefixes.hasOne.map(remoteMethod.bind(null, 'shop'));
-      expect(getRemoteMethods(ShopOwner)).to.eql(remoteMethods);
+      expect(RemoteMethods(ShopOwner)).to.eql(remoteMethods);
     });
   });
 
   describe('hasMany', function() {
     it('returns remoteMethods for hasMany relation', function() {
       var remoteMethods = prefixes.hasMany.map(remoteMethod.bind(null, 'products'));
-      expect(getRemoteMethods(Shop)).to.eql(remoteMethods);
+      expect(RemoteMethods(Shop)).to.eql(remoteMethods);
     });
   });
 
   describe('hasManyThrough', function() {
     it('returns remoteMethods for hasManyThrough relation', function() {
       var remoteMethods = prefixes.hasManyThrough.map(remoteMethod.bind(null, 'collected_products'));
-      expect(getRemoteMethods(Customer)).to.eql(remoteMethods);
+      expect(RemoteMethods(Customer)).to.eql(remoteMethods);
     });
   });
 
   describe('hasAndBelongsToMany', function() {
     it('returns remoteMethods for hasAndBelongsToMany relation', function() {
       var remoteMethods = prefixes.hasAndBelongsToMany.map(remoteMethod.bind(null, 'tags'));
-      expect(getRemoteMethods(Category)).to.eql(remoteMethods);
+      expect(RemoteMethods(Category)).to.eql(remoteMethods);
     });
   });
 
   describe('embedsOne', function() {
     it('returns remoteMethods for embedsOne relation', function() {
       var remoteMethods = prefixes.embedsOne.map(remoteMethod.bind(null, 'slug'));
-      expect(getRemoteMethods(Item)).to.eql(remoteMethods);
+      expect(RemoteMethods(Item)).to.eql(remoteMethods);
     });
   });
 
   describe('embedsMany', function() {
     it('returns remoteMethods for embedsMany relation', function() {
       var remoteMethods = prefixes.embedsMany.map(remoteMethod.bind(null, 'addresses'));
-      expect(getRemoteMethods(User)).to.eql(remoteMethods);
+      expect(RemoteMethods(User)).to.eql(remoteMethods);
     });
   });
 
   describe('referencesMany', function() {
     it('returns remoteMethods for referencesMany relation', function() {
       var remoteMethods = prefixes.referencesMany.map(remoteMethod.bind(null, 'colors'));
-      expect(getRemoteMethods(Palatee)).to.eql(remoteMethods);
+      expect(RemoteMethods(Palatee)).to.eql(remoteMethods);
+    });
+  });
+
+  describe('scopes', function() {
+    it('returns all remoteMethods declared in scopes or by Model.scope', function() {
+      var remoteMethods
+        = prefixes.scopes.map(remoteMethod.bind(null, 'latest_comments'));
+      expect(RemoteMethods(Comment)).to.eql(remoteMethods);
     });
   });
 
