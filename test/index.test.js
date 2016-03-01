@@ -20,6 +20,13 @@ describe('RemoteRouting', function(){
 
     Color = app.model('color', {
       name: String,
+      scopes: {
+        whiteColors: {
+          where: {
+            name: 'white'
+          }
+        }
+      },
       relations: {
         palatee: {
           type: 'belongsTo',
@@ -96,7 +103,8 @@ describe('RemoteRouting', function(){
       RemoteRouting(Color, {only: [
         '@create',
         '__get__colorWheels',
-        '__get__embededColor'
+        '__get__embededColor',
+        '@__get__whiteColors'
       ]});
     });
 
@@ -105,9 +113,10 @@ describe('RemoteRouting', function(){
       var remoteMethods = colorRoutes.map(function(router){
         return router.method;
       });
-      expect(colorRoutes.length).to.eql(3);
+      expect(colorRoutes.length).to.eql(4);
       expect(remoteMethods).to.have.members([
         'color.create',
+        'color.__get__whiteColors',
         'color.prototype.__get__colorWheels',
         'color.prototype.__get__embededColor'
       ])

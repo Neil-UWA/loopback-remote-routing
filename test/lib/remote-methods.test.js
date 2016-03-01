@@ -190,8 +190,9 @@ describe('RemoteMethods', function() {
 
   describe('scopes', function() {
     it('returns all remoteMethods declared in scopes or by Model.scope', function() {
-      var remoteMethods
-        = prefixes.scopes.map(remoteMethod.bind(null, 'latest_comments'));
+      var remoteMethods = prefixes.scopes.map(function(prefix) {
+        return ['@', prefix, 'latest_comments'].join('');
+      });
       expect(RemoteMethods(Comment)).to.eql(remoteMethods);
     });
   });
