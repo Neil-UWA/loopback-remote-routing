@@ -5,8 +5,8 @@ Easily disable remote methods.
 
 ##Features
 
-- selectively disable remote methods created by relations (declared in model definiton)
-- selectively disable remote methods created by scopes, either defined in model.json or using model's scope() method
+- selectively disable remote methods created by *relations* (declared in model definiton)
+- selectively disable remote methods created by *scopes* (either defined in model definition or using model's scope() method
 
 ##Installation
 
@@ -24,24 +24,29 @@ var RemoteRouting = require('loopback-remote-routing');
 module.exports = function(Color) {
   // use only to expose specified remote methods
   // symbol @ denotes static method
-  RemoteRouting(Color, {only: [
-    '@find',
-    '@findById',
-    'updateAttributes'
-  ]})
+  // scope methods are static method
+  Model.on('attached', function(){
+    RemoteRouting(Color, {only: [
+      '@find',
+      '@findById',
+      'updateAttributes'
+    ]})
 
-  //use except to expose all remote methods except specified ones
-  RemoteRouting(Color, {except: [
-    '@create',
-    '@find'
-  ]}
+    //use except to expose all remote methods except specified ones
+    RemoteRouting(Color, {except: [
+      '@create',
+      '@find'
+    ]}
 
-  //disable all remote methods omitting options
+    //disable all remote methods omitting options
 
-  RemoteRouting(Color)
+    RemoteRouting(Color)
+  });
+
 }
 
-`if you have declared scopes, it's better to call the method when model is attached to datasrouce`
-
 ```
-you can only use options.only or options.except, do not use them together.
+
+You can only use options.only or options.except, do not use them together.
+
+*RemoteRouting* can be called before model being attached, but it will not be able to disable remote methods declared by scopes
