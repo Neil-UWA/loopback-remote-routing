@@ -1,12 +1,18 @@
 var _ = require('lodash');
 var RemoteMethods = require('./lib/remote-methods.js');
 
+module.exports = function(Model, options) {
+  Model.on('attached', function() {
+    RemoteRouting(Model, options);
+  });
+};
+
 //options : {only: [], except: []}
 //only: only expose specified methods, disable others
 //except: expose all methods, except specified ones
 //symbol @ donates the method is static
 
-module.exports  = function RemoteRouting(Model, options) {
+function RemoteRouting(Model, options) {
   options = options || {};
 
   var methods =[
