@@ -25,23 +25,21 @@ module.exports = function(Color) {
   // use only to expose specified remote methods
   // symbol @ denotes static method
   // scope methods are static method
-  Model.on('attached', function(){
-    RemoteRouting(Color, {only: [
+  RemoteRouting(Color, {only: [
       '@find',
       '@findById',
       'updateAttributes'
-    ]})
+  ]})
 
-    //use except to expose all remote methods except specified ones
-    RemoteRouting(Color, {except: [
+  //use except to expose all remote methods except specified ones
+  RemoteRouting(Color, {except: [
       '@create',
       '@find'
-    ]}
+  ]}
 
-    //disable all remote methods omitting options
+  //disable all remote methods omitting options
 
-    RemoteRouting(Color)
-  });
+  RemoteRouting(Color)
 
 }
 
