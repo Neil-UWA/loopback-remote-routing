@@ -5,8 +5,8 @@ Easily disable remote methods.
 
 ##Features
 
-- selectively disable remote methods created by *relations* (declared in model definiton)
-- selectively disable remote methods created by *scopes* (either defined in model definition or using model's scope() method
+- selectively disable remote methods created by *relations*, defined by code or in definition
+- selectively disable remote methods created by *scopes* , defined by code or in definition
 
 ##Installation
 
@@ -48,5 +48,3 @@ module.exports = function(Color) {
 ```
 
 You can only use options.only or options.except, do not use them together.
-
-*RemoteRouting* can be called before model being attached, but it will not be able to disable remote methods declared by scopes

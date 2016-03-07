@@ -32,11 +32,6 @@ describe('RemoteRouting', function(){
           type: 'belongsTo',
           model: 'palatee'
         },
-        colorWheels: {
-          type: 'hasMany',
-          model: 'palatee',
-          through: 'PalateeColor'
-        },
         dazzleColor: {
           type: 'hasOne',
           model: 'color'
@@ -56,8 +51,6 @@ describe('RemoteRouting', function(){
       },
       dataSource: 'db'
     });
-
-    Color.embedsOne(Color, {as: 'embededColor'});
 
     PalateeColor = app.model('PalateeColor', {
       relations: {
@@ -93,6 +86,12 @@ describe('RemoteRouting', function(){
       dataSource: 'db'
     });
 
+    Color.embedsOne(Color, {as: 'embededColor'});
+    Color.hasMany(Palatee, {as: 'colorWheels'});
+    Color.scope('yellow', {
+      where: {name: 'yellow'}
+    });
+
     allColorRoutes = getModelRest(Color);
   });
 
@@ -102,7 +101,8 @@ describe('RemoteRouting', function(){
         '@create',
         '__get__colorWheels',
         '__get__embededColor',
-        '@__get__whiteColors'
+        '@__get__whiteColors',
+        '@__get__yellow'
       ]});
     });
 
@@ -112,10 +112,11 @@ describe('RemoteRouting', function(){
         var remoteMethods = colorRoutes.map(function(router){
           return router.method;
         });
-        expect(colorRoutes.length).to.eql(4);
+        expect(colorRoutes.length).to.eql(5);
         expect(remoteMethods).to.have.members([
           'color.create',
           'color.__get__whiteColors',
+          'color.__get__yellow',
           'color.prototype.__get__colorWheels',
           'color.prototype.__get__embededColor'
         ]);
