@@ -20,15 +20,17 @@ describe('RemoteRouting', function(){
 
     Color = app.model('color', {
       name: String,
+      scopes: {
+        whiteColors: {
+          where: {
+            name: 'white'
+          }
+        }
+      },
       relations: {
         palatee: {
           type: 'belongsTo',
           model: 'palatee'
-        },
-        colorWheels: {
-          type: 'hasMany',
-          model: 'palatee',
-          through: 'PalateeColor'
         },
         dazzleColor: {
           type: 'hasOne',
@@ -37,10 +39,6 @@ describe('RemoteRouting', function(){
         nightPalatee: {
           type: 'hasAndBelongsToMany',
           model: 'palatee'
-        },
-        embededColor: {
-          type: 'embedsOne',
-          model: 'color'
         },
         rgbColor: {
           type: 'embedsMany',
@@ -88,6 +86,12 @@ describe('RemoteRouting', function(){
       dataSource: 'db'
     });
 
+    Color.embedsOne(Color, {as: 'embededColor'});
+    Color.hasMany(Palatee, {as: 'colorWheels'});
+    Color.scope('yellow', {
+      where: {name: 'yellow'}
+    });
+
     allColorRoutes = getModelRest(Color);
   });
 
@@ -96,21 +100,27 @@ describe('RemoteRouting', function(){
       RemoteRouting(Color, {only: [
         '@create',
         '__get__colorWheels',
-        '__get__embededColor'
+        '__get__embededColor',
+        '@__get__whiteColors',
+        '@__get__yellow'
       ]});
     });
 
     it('should only expose specified remote methods', function(){
-      var colorRoutes = getModelRest(Color);
-      var remoteMethods = colorRoutes.map(function(router){
-        return router.method;
+      Color.on('attached', function() {
+        var colorRoutes = getModelRest(Color);
+        var remoteMethods = colorRoutes.map(function(router){
+          return router.method;
+        });
+        expect(colorRoutes.length).to.eql(5);
+        expect(remoteMethods).to.have.members([
+          'color.create',
+          'color.__get__whiteColors',
+          'color.__get__yellow',
+          'color.prototype.__get__colorWheels',
+          'color.prototype.__get__embededColor'
+        ]);
       });
-      expect(colorRoutes.length).to.eql(3);
-      expect(remoteMethods).to.have.members([
-        'color.create',
-        'color.prototype.__get__colorWheels',
-        'color.prototype.__get__embededColor'
-      ])
     });
   });
 
@@ -120,12 +130,14 @@ describe('RemoteRouting', function(){
     });
 
     it('should expose all remote methods except specified ones', function(){
-      var colorRoutes = getModelRest(Color);
-      expect(allColorRoutes.length - colorRoutes.length).to.eql(2);
-      colorRoutes.forEach(function(endpoint){
-        expect(endpoint.method).to.satisfy(function(method){
-          return method !== 'color.create' && method !== 'colore.find';
-        })
+      Color.on('attached', function() {
+        var colorRoutes = getModelRest(Color);
+        expect(allColorRoutes.length - colorRoutes.length).to.eql(2);
+        colorRoutes.forEach(function(endpoint){
+          expect(endpoint.method).to.satisfy(function(method){
+            return method !== 'color.create' && method !== 'colore.find';
+          })
+        });
       });
     });
   });

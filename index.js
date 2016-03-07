@@ -1,11 +1,18 @@
 var _ = require('lodash');
+var RemoteMethods = require('./lib/remote-methods.js');
+
+module.exports = function(Model, options) {
+  Model.on('attached', function() {
+    RemoteRouting(Model, options);
+  });
+};
 
 //options : {only: [], except: []}
 //only: only expose specified methods, disable others
 //except: expose all methods, except specified ones
 //symbol @ donates the method is static
 
-module.exports  = function RemoteRouting(Model, options) {
+function RemoteRouting(Model, options) {
   options = options || {};
 
   var methods =[
@@ -30,7 +37,7 @@ module.exports  = function RemoteRouting(Model, options) {
       '@resetPassword']).value();
   }
 
-  methods = methods.concat(getRelationMethods(Model));
+  methods = methods.concat(RemoteMethods(Model));
 
   if (options.only && options.only.length) {
     methods = _.difference(methods, options.only);
@@ -51,73 +58,3 @@ module.exports  = function RemoteRouting(Model, options) {
   });
 }
 
-function getRelationMethods(Model) {
-  var remoteMethods = [];
-  var hasManyPrefixs;
-  var hasOnePrefixs;
-  var belongsToPrefixs;
-  var embedsManyPrefixs;
-
-  var relations = Model.definition.settings.relations;
-
-  if (!relations) return remoteMethods;
-
-  embedsManyPrefixs = [
-    '__create__',
-    '__get__',
-    '__delete__',
-    '__findById__',
-    '__updateById__',
-    '__destroyById__',
-    '__count__'
-  ];
-
-  hasManyPrefixs = [
-    '__create__',
-    '__get__',
-    '__delete__',
-    '__findById__',
-    '__updateById__',
-    '__destroyById__',
-    '__count__',
-    '__exists__',
-    '__link__',
-    '__unlink__'
-  ];
-
-  hasOnePrefixs = [
-    '__create__',
-    '__get__',
-    '__update__',
-    '__destroy__'
-  ];
-
-  belongsToPrefixs = [
-    '__get__'
-  ];
-
-  Object.keys(relations).forEach(function(targetModel){
-    switch(relations[targetModel].type) {
-    case 'hasMany':
-    case 'referencesMany':
-    case 'hasAndBelongsToMany':
-      hasManyPrefixs.forEach(disableIt);
-      break;
-    case 'embedsMany':
-      embedsManyPrefixs.forEach(disableIt);
-      break;
-    case 'embedsOne':
-    case 'hasOne':
-      hasOnePrefixs.forEach(disableIt);
-      break;
-    case 'belongsTo':
-      belongsToPrefixs.forEach(disableIt);
-      break;
-    }
-    function disableIt(prefix) {
-      remoteMethods.push(prefix+targetModel);
-    }
-  })
-
-  return remoteMethods;
-}
