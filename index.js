@@ -26,8 +26,17 @@ function RemoteRouting(Model, options) {
     '@findOne',
     '@createChangeStream',
     '@updateAll',
-    'updateAttributes'
-  ]
+    'updateAttributes',
+    '@download',
+    '@getFile',
+    '@getFiles',
+    '@removeFile',
+    '@getContainers',
+    '@createContainer',
+    '@destroyContainer',
+    '@getContainer',
+    '@upload'
+  ];
 
   if (Model.modelName === 'User' || Model.base.modelName === 'User') {
     methods = _(methods).concat([
