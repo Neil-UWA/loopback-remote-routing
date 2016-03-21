@@ -1,4 +1,5 @@
 var _ = require('lodash');
+var utils = require('./lib/utils.js');
 var RemoteMethods = require('./lib/remote-methods.js');
 
 module.exports = function(Model, options) {
@@ -15,9 +16,7 @@ module.exports = function(Model, options) {
 function RemoteRouting(Model, options) {
   options = options || {};
 
-  var methods =[];
-
-  methods = methods.concat(RemoteMethods(Model));
+  var methods = RemoteMethods(Model);
 
   if (options.only && options.only.length) {
     methods = _.difference(methods, options.only);
