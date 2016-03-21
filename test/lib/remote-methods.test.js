@@ -2,135 +2,114 @@ var RemoteMethods = require('../../lib/remote-methods.js');
 var prefixes = require('../../lib/prefixes.js');
 var expect = require('chai').expect;
 var app = require('loopback')();
+var db = app.dataSource('db', {adapter: 'memory'});
 
 describe('RemoteMethods', function() {
 
-  var Product = {
-    modelName: 'product',
-    definition: { settings: {
-      relations:  {
-        shop: {
-          type: 'belongsTo',
-          model: 'shop'
-        }
+  var Product = app.model('product', {
+    relations:  {
+      shop: {
+        type: 'belongsTo',
+        model: 'shop'
       }
-    }}
-  };
+    },
+    dataSource: 'db'
+  });
 
-  var Category = {
-    modelName: 'shopOwner',
-    definition: { settings: {
-      relations:  {
-        tags: {
-          type: 'hasAndBelongsToMany',
-          model: 'tag'
-        }
+  var Category = app.model('category', {
+    relations:  {
+      tags: {
+        type: 'hasAndBelongsToMany',
+        model: 'tag'
       }
-    }}
-  };
+    },
+    dataSource: 'db'
+  });
 
-  var ShopOwner = {
-    modelName: 'shopOwner',
-    definition: { settings: {
-      relations:  {
-        shop: {
-          type: 'hasOne',
-          model: 'shop'
-        }
+  var ShopOwner = app.model('shopOwner', {
+    relations:  {
+      shop: {
+        type: 'hasOne',
+        model: 'shop'
       }
-    }}
-  };
+    },
+    dataSource: 'db'
+  })
 
-  var Customer = {
-    modelName: 'customer',
-    definition: { settings: {
-      relations:  {
-        collected_products: {
-          type: 'hasMany',
-          model: 'product',
-          through: 'collection'
-        }
+  var Customer = app.model('customer', {
+    relations:  {
+      collected_products: {
+        type: 'hasMany',
+        model: 'product',
+        through: 'collection'
       }
-    }}
-  };
+    },
+    dataSource: 'db'
+  });
 
-  var User = {
-    modelName: 'user',
-    definition: { settings: {
-      relations:  {
-        addresses: {
-          type: 'embedsMany',
-          model: 'address'
-        }
+  var User = app.model('user', {
+    relations:  {
+      addresses: {
+        type: 'embedsMany',
+        model: 'address'
       }
-    }}
-  }
+    },
+    dataSource: 'db'
+  });
 
-  var Palatee = {
-    modelName: 'palatee',
-    definition: { settings: {
-      relations:  {
-        colors: {
-          type: 'referencesMany',
-          model: 'color'
-        }
+  var Palatee = app.model('palatee', {
+    relations:  {
+      colors: {
+        type: 'referencesMany',
+        model: 'color'
       }
-    }}
-  }
-  var Collection = {
-    modelName: 'collection',
-    definition: { settings: {
-      relations:  {
-        collector: {
-          type: 'belongsTo',
-          model: 'customer'
-        },
-        product: {
-          type: 'belongsTo',
-          model: 'product'
-        }
-      }
-    }}
-  };
+    },
+    dataSource: 'db'
+  });
 
-  var Shop = {
-    modelName: 'shop',
-    definition: { settings: {
-      relations:  {
-        products: {
-          type: 'hasMany',
-          model: 'product'
-        }
-      }
-    }}
-  }
 
-  var Item = {
-    modelName: 'item',
-    definition: { settings: {
-      relations:  {
-        slug: {
-          type: 'embedsOne',
-          model: 'slug'
-        }
+  var Collection = app.model('collection', {
+    relations:  {
+      collector: {
+        type: 'belongsTo',
+        model: 'customer'
+      },
+      product: {
+        type: 'belongsTo',
+        model: 'product'
       }
-    }}
-  }
+    },
+    dataSource: 'db'
+  });
 
-  var Comment = {
-    modelName: 'comment',
-    __get__latest_comments: function() {},
-    __create__latest_comments: function() {},
-    __count__latest_comments: function() {},
-    __delete__latest_comments: function() {},
-    definition: { settings: {
-      scopes:  {
-        latest_comments: {
-          order: 'updated_at DESC'
-        }
+  var Shop = app.model('shop', {
+    relations:  {
+      products: {
+        type: 'hasMany',
+        model: 'product'
       }
-    }}
-  }
+    },
+    dataSource: 'db'
+  });
+
+  var Item = app.model('item', {
+    relations:  {
+      slug: {
+        type: 'embedsOne',
+        model: 'slug'
+      }
+    },
+    dataSource: 'db'
+  });
+
+  var Comment = app.model('comment', {
+    scopes:  {
+      latest_comments: {
+        order: 'updated_at DESC'
+      }
+    },
+    dataSource: 'db'
+  })
 
   describe('belongsTo', function() {
     it('returns remoteMethods for belongsTo relation', function() {

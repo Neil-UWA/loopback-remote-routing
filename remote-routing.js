@@ -15,41 +15,7 @@ module.exports = function(Model, options) {
 function RemoteRouting(Model, options) {
   options = options || {};
 
-  var methods =[
-    '@create',
-    '@upsert',
-    '@exists',
-    '@findById',
-    '@deleteById',
-    '@count',
-    '@find',
-    '@findOne',
-    '@createChangeStream',
-    '@updateAll',
-    'updateAttributes'
-  ];
-
-  if (Model.modelName === 'User' || Model.base.modelName === 'User') {
-    methods = _(methods).concat([
-      '@login',
-      '@logout',
-      '@confirm',
-      '@resetPassword']).value();
-  }
-
-  if (Model.dataSource.settings.connector === 'loopback-component-storage') {
-    methods = _(methods).concat([
-      '@download',
-      '@getFile',
-      '@getFiles',
-      '@removeFile',
-      '@getContainers',
-      '@createContainer',
-      '@destroyContainer',
-      '@getContainer',
-      '@upload'
-    ]).value();
-  }
+  var methods =[];
 
   methods = methods.concat(RemoteMethods(Model));
 
