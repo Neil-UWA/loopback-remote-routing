@@ -190,7 +190,9 @@ describe('Utils', function() {
       '@findOne',
       '@createChangeStream',
       '@updateAll',
-      'updateAttributes'
+      'updateAttributes',
+      '@replaceById',
+      '@replaceOrCreate'
     ];
     it('returns default methods',  function() {
       expect(utils.defaultMethods(Comment)).to.eql(defaultMethods);
