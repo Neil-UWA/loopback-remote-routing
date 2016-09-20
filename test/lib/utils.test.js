@@ -192,7 +192,8 @@ describe('Utils', function() {
       '@updateAll',
       'updateAttributes',
       '@replaceById',
-      '@replaceOrCreate'
+      '@replaceOrCreate',
+      '@upsertWithWhere'
     ];
     it('returns default methods',  function() {
       expect(utils.defaultMethods(Comment)).to.eql(defaultMethods);
