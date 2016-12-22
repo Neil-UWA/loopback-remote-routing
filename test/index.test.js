@@ -18,7 +18,8 @@ describe('RemoteRouting', function(){
   beforeEach(function(){
     db = app.dataSource('db', {adapter: 'memory'});
 
-    Color = app.model('color', {
+    Color = app.registry.createModel('color');
+    app.model(Color, {
       name: String,
       scopes: {
         whiteColors: {
@@ -52,7 +53,8 @@ describe('RemoteRouting', function(){
       dataSource: 'db'
     });
 
-    PalateeColor = app.model('PalateeColor', {
+    PalateeColor = app.registry.createModel('PalateeColor');
+    app.model(PalateeColor, {
       relations: {
         color: {
           type: 'belongsTo',
@@ -66,7 +68,8 @@ describe('RemoteRouting', function(){
       dataSource: 'db'
     })
 
-    Palatee = app.model('palatee', {
+    Palatee = app.registry.createModel('palatee');
+    app.model(Palatee, {
       name: String,
       relations: {
         colors: {

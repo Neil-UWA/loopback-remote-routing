@@ -6,7 +6,8 @@ var db = app.dataSource('db', {adapter: 'memory'});
 
 describe('RemoteMethods', function() {
 
-  var Product = app.model('product', {
+  var Product = app.registry.createModel('product');
+  app.model(Product, {
     relations:  {
       shop: {
         type: 'belongsTo',
