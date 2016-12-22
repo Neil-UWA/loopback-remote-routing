@@ -29,14 +29,20 @@ function RemoteRouting(Model, options) {
   }
 
   methods.forEach(function(method){
-    // since Model.disableRemoteMethod has renamed into 
-    //       Model.disableRemoteMethodByName in loopback 3.X
-    var disableRemoteMethod = Model.disableRemoteMethodByName || Model.disableRemoteMethod;
-    if (/^@/.test(method)) {
-      disableRemoteMethod.call(Model, method.replace(/^@/, ''), true);
+    if(Model.disableRemoteMethodByName) {
+      // since Model.disableRemoteMethod        has deprecated in loopback 3.X 
+      // use   Model.disableRemoteMethodByName  instead
+      if (/^@/.test(method)) {
+        Model.disableRemoteMethodByName(method.replace(/^@/, ''));
+      } else {
+        Model.disableRemoteMethodByName('prototype.' + method);
+      }
     } else {
-      disableRemoteMethod.call(Model, method, false);
-    }
+      if (/^@/.test(method)) {
+        Model.disableRemoteMethod(method.replace(/^@/, ''), true);
+      } else {
+        Model.disableRemoteMethod(method, false);
+      }
+    }    
   });
 }
-
