@@ -6,7 +6,8 @@ var db = app.dataSource('db', {adapter: 'memory'});
 
 describe('Utils', function() {
 
-  var Product = app.model('product', {
+  var Product = app.registry.createModel('product');
+  app.model(Product, {
     relations:  {
       shop: {
         type: 'belongsTo',
@@ -16,7 +17,8 @@ describe('Utils', function() {
     dataSource: 'db'
   });
 
-  var Category = app.model('category', {
+  var Category = app.registry.createModel('category');
+  app.model(Category, {
     relations:  {
       tags: {
         type: 'hasAndBelongsToMany',
@@ -26,7 +28,8 @@ describe('Utils', function() {
     dataSource: 'db'
   });
 
-  var ShopOwner = app.model('shopOwner', {
+  var ShopOwner = app.registry.createModel('shopOwner');
+  app.model(ShopOwner, {
     relations:  {
       shop: {
         type: 'hasOne',
@@ -36,7 +39,8 @@ describe('Utils', function() {
     dataSource: 'db'
   })
 
-  var Customer = app.model('customer', {
+  var Customer = app.registry.createModel('customer');
+  app.model(Customer, {
     relations:  {
       collected_products: {
         type: 'hasMany',
@@ -47,7 +51,8 @@ describe('Utils', function() {
     dataSource: 'db'
   });
 
-  var User = app.model('user', {
+  var User = app.registry.createModel('user');
+  app.model(User, {
     relations:  {
       addresses: {
         type: 'embedsMany',
@@ -57,7 +62,8 @@ describe('Utils', function() {
     dataSource: 'db'
   });
 
-  var Palatee = app.model('palatee', {
+  var Palatee = app.registry.createModel('palatee');
+  app.model(Palatee, {
     relations:  {
       colors: {
         type: 'referencesMany',
@@ -67,7 +73,8 @@ describe('Utils', function() {
     dataSource: 'db'
   });
 
-  var Collection = app.model('collection', {
+  var Collection = app.registry.createModel('collection');
+  app.model(Collection, {
     relations:  {
       collector: {
         type: 'belongsTo',
@@ -81,7 +88,8 @@ describe('Utils', function() {
     dataSource: 'db'
   });
 
-  var Shop = app.model('shop', {
+  var Shop = app.registry.createModel('shop');
+  app.model(Shop, {
     relations:  {
       products: {
         type: 'hasMany',
@@ -91,7 +99,8 @@ describe('Utils', function() {
     dataSource: 'db'
   });
 
-  var Item = app.model('item', {
+  var Item = app.registry.createModel('item');
+  app.model(Item, {
     relations:  {
       slug: {
         type: 'embedsOne',
@@ -101,12 +110,14 @@ describe('Utils', function() {
     dataSource: 'db'
   });
 
-  var Comment = app.model('comment', {
-    scopes:  {
+  var Comment = app.registry.createModel('comment', {}, {
+    scopes: {
       latest_comments: {
         order: 'updated_at DESC'
       }
-    },
+    }
+  });
+  app.model(Comment, {
     dataSource: 'db'
   })
 
@@ -200,8 +211,8 @@ describe('Utils', function() {
     });
 
     it('adds methods for models with base Model User', function(){
-      var Client = app.model('client', {
-        base: 'User',
+      var Client = app.registry.createModel('client', {}, {base: 'User'});
+      app.model(Client, {
         dataSource: 'db'
       });
       expect(utils.defaultMethods(Client)).to.eql(defaultMethods.concat([
