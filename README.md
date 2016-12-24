@@ -101,4 +101,4 @@ To use with your Models add the mixins attribute to the definition object of you
 
 You can only use options.only or options.except, do not use them together.
 
-If you don't know the relation methods name , you can read the doc https://docs.strongloop.com/display/public/LB/Accessing+related+models](https://docs.strongloop.com/display/public/LB/Accessing+related+models
+If you don't know the relation methods name , you can read the doc : [http://loopback.io/doc/en/lb3/Exposing-models-over-REST.html](http://loopback.io/doc/en/lb3/Exposing-models-over-REST.html)
