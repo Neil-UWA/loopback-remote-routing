@@ -1,3 +1,7 @@
+2016-12-24, Version 1.3.3
+=========================
+* Support loopback@3.x, which uses disableRemoteMethodByName (#11) [@upupzealot](https://github.com/upupzealot)
+
 2016-09-12, Version 1.3.2
 =========================
 * Support for @upsertWithWhere method (Loopback 2.34.1) [@zeddsdead](https://github.com/zeddsdead)
