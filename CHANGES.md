@@ -1,4 +1,4 @@
-2016-12-24, Version 1.3.3
+2016-12-24, Version 1.4.0
 =========================
 * Support loopback@3.x, which uses disableRemoteMethodByName (#11) [@upupzealot](https://github.com/upupzealot)
 
