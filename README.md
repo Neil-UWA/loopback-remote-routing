@@ -9,6 +9,7 @@ Easily disable remote methods.
 - selectively disable remote methods created by *scopes* , defined by code or in definition
 - support loopback-component-storage specific methods
 - use as mixin
+- support for loopback@3.x
 
 ##Installation
 
@@ -102,3 +103,8 @@ To use with your Models add the mixins attribute to the definition object of you
 You can only use options.only or options.except, do not use them together.
 
 If you don't know the relation methods name , you can read the doc : [http://loopback.io/doc/en/lb3/Exposing-models-over-REST.html](http://loopback.io/doc/en/lb3/Exposing-models-over-REST.html)
+
+
+##TODO
+- allow disable custom remote methods
+- disable alias remote methods, such as upert, patchOrCreate
