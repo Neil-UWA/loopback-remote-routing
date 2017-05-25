@@ -19,7 +19,7 @@ Model.remoteMethod = function(name, config) {
     disable = !_.includes(options.only, name);
   }
 
-  if (options.only && options.only.length) {
+  if (options.except && options.except.length) {
     disable = disable || _.includes(options.except, name);
   }
 
