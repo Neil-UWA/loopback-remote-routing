@@ -8,6 +8,26 @@ module.exports = function(Model, options) {
   });
 };
 
+var remoteMethod = Model.remoteMethod;
+
+Model.remoteMethod = function(name, config) {
+  var disable;
+
+  remoteMethod.call(Model, name, config);
+
+  if (options.only && options.only.length) {
+    disable = !_.includes(options.only, name);
+  }
+
+  if (options.only && options.only.length) {
+    disable = disable || _.includes(options.except, name);
+  }
+
+  if (disable) {
+    Model.disableRemoteMethod(name, /^prototype/.test(name));
+  }
+};
+
 //options : {only: [], except: []}
 //only: only expose specified methods, disable others
 //except: expose all methods, except specified ones
