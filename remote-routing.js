@@ -6,6 +6,26 @@ module.exports = function(Model, options) {
   Model.on('attached', function() {
     RemoteRouting(Model, options);
   });
+
+  var remoteMethod = Model.remoteMethod;
+
+  Model.remoteMethod = function(name, config) {
+    var disable;
+
+    remoteMethod.call(Model, name, config);
+
+    if (options.only && options.only.length) {
+      disable = !_.includes(options.only, name);
+    }
+
+    if (options.except && options.except.length) {
+      disable = disable || _.includes(options.except, name);
+    }
+
+    if (disable) {
+      Model.disableRemoteMethod(name, /^prototype/.test(name));
+    }
+  }
 };
 
 //options : {only: [], except: []}
