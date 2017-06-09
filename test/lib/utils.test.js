@@ -219,7 +219,10 @@ describe('Utils', function() {
         '@login',
         '@logout',
         '@confirm',
-        '@resetPassword'
+        '@resetPassword',
+        '@changePassword',
+        '@setPassword',
+        'verify'
       ]));
     });
   });

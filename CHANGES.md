@@ -1,3 +1,8 @@
+2017-06-09, Version 1.5.1
+=========================
+* fix tests
+* Support User.setPassword
+
 2017-06-09, Version 1.5.0
 =========================
 * Enable to disable custom remote methods (#13) [@BolaMn](https://github.com/BoLaMN)
