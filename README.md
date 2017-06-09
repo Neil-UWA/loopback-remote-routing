@@ -7,6 +7,7 @@ Easily disable remote methods.
 
 - selectively disable remote methods created by *relations*, defined by code or in definition
 - selectively disable remote methods created by *scopes* , defined by code or in definition
+- easily disable custom remote methods, currently works only when use RemoteRouting directly in js file
 - support loopback-component-storage specific methods
 - use as mixin
 - support for loopback@3.x
@@ -30,10 +31,12 @@ module.exports = function(Color) {
   // use only to expose specified remote methods
   // symbol @ denotes static method
   // scope methods are static method
+  // custom remote method just need to specify the method name
   RemoteRouting(Color, {only: [
       '@find',
       '@findById',
       'updateAttributes'
+      'customRemotemethod'
   ]})
 
   //use except to expose all remote methods except specified ones

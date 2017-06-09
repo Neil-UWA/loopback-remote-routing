@@ -1,3 +1,10 @@
+2017-06-09, Version 1.5.0
+=========================
+* Enable to disable custom remote methods (#13) [@BolaMn](https://github.com/BoLaMN)
+* Support User.Verify
+* Support User.resetPassword
+* Support User.changePassword
+
 2016-12-24, Version 1.4.0
 =========================
 * Support loopback@3.x, which uses disableRemoteMethodByName (#11) [@upupzealot](https://github.com/upupzealot)
