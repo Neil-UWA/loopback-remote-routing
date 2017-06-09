@@ -3,6 +3,7 @@ var utils = require('./lib/utils.js');
 var RemoteMethods = require('./lib/remote-methods.js');
 
 module.exports = function(Model, options) {
+  options = options || {};
   Model.on('attached', function() {
     RemoteRouting(Model, options);
   });
@@ -11,6 +12,10 @@ module.exports = function(Model, options) {
 
   Model.remoteMethod = function(name, config) {
     var disable;
+
+    if (!config.hasOwnProperty('isStatic')) {
+      config.isStatic = true;
+    }
 
     remoteMethod.call(Model, name, config);
 
@@ -23,9 +28,10 @@ module.exports = function(Model, options) {
     }
 
     if (disable) {
-      Model.disableRemoteMethod(name, /^prototype/.test(name));
+      Model.disableRemoteMethod(name, config.isStatic);
     }
   }
+
 };
 
 //options : {only: [], except: []}
@@ -50,7 +56,7 @@ function RemoteRouting(Model, options) {
 
   methods.forEach(function(method){
     if(Model.disableRemoteMethodByName) {
-      // since Model.disableRemoteMethod        has deprecated in loopback 3.X 
+      // since Model.disableRemoteMethod        has deprecated in loopback 3.X
       // use   Model.disableRemoteMethodByName  instead
       if (/^@/.test(method)) {
         Model.disableRemoteMethodByName(method.replace(/^@/, ''));
@@ -63,6 +69,6 @@ function RemoteRouting(Model, options) {
       } else {
         Model.disableRemoteMethod(method, false);
       }
-    }    
+    }
   });
 }
