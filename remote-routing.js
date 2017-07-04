@@ -13,10 +13,6 @@ module.exports = function(Model, options) {
   Model.remoteMethod = function(name, config) {
     var disable;
 
-    if (!config.hasOwnProperty('isStatic')) {
-      config.isStatic = true;
-    }
-
     remoteMethod.call(Model, name, config);
 
     if (options.only && options.only.length) {
@@ -28,11 +24,31 @@ module.exports = function(Model, options) {
     }
 
     if (disable) {
-      Model.disableRemoteMethod(name, config.isStatic);
+      disableRemoteMethod(Model, name)
     }
   }
-
 };
+
+/**
+ * Helper to disable a remome method.
+ */
+function disableRemoteMethod(Model, method) {
+  if(Model.disableRemoteMethodByName) {
+    // since Model.disableRemoteMethod        has deprecated in loopback 3.X
+    // use   Model.disableRemoteMethodByName  instead
+    if (/^@/.test(method)) {
+      Model.disableRemoteMethodByName(method.replace(/^@/, ''));
+    } else {
+      Model.disableRemoteMethodByName('prototype.' + method);
+    }
+  } else {
+    if (/^@/.test(method)) {
+      Model.disableRemoteMethod(method.replace(/^@/, ''), true);
+    } else {
+      Model.disableRemoteMethod(method, false);
+    }
+  }
+}
 
 //options : {only: [], except: []}
 //only: only expose specified methods, disable others
@@ -55,20 +71,6 @@ function RemoteRouting(Model, options) {
   }
 
   methods.forEach(function(method){
-    if(Model.disableRemoteMethodByName) {
-      // since Model.disableRemoteMethod        has deprecated in loopback 3.X
-      // use   Model.disableRemoteMethodByName  instead
-      if (/^@/.test(method)) {
-        Model.disableRemoteMethodByName(method.replace(/^@/, ''));
-      } else {
-        Model.disableRemoteMethodByName('prototype.' + method);
-      }
-    } else {
-      if (/^@/.test(method)) {
-        Model.disableRemoteMethod(method.replace(/^@/, ''), true);
-      } else {
-        Model.disableRemoteMethod(method, false);
-      }
-    }
+    disableRemoteMethod(Model, method)
   });
 }
