@@ -1,3 +1,8 @@
+2017-07-10, Version 1.5.2
+=========================
+* Support disableRemoteMethodByName when disabling custom remote methods (loopback > 3.0) (PR #16) [@fullcube](https://github.com/fullcube)
+* custome remote methods should also follow the conventional naming rules
+
 2017-06-09, Version 1.5.1
 =========================
 * fix tests

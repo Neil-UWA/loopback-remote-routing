@@ -31,12 +31,13 @@ module.exports = function(Color) {
   // use only to expose specified remote methods
   // symbol @ denotes static method
   // scope methods are static method
-  // custom remote method just need to specify the method name
+  // custom remote method  also need to follow the naming convention
   RemoteRouting(Color, {only: [
       '@find',
       '@findById',
-      'updateAttributes'
-      'customRemotemethod'
+      'updateAttributes',
+      '@customRemotemethod',
+      'customRemotemethodOnPrototype'
   ]})
 
   //use except to expose all remote methods except specified ones
