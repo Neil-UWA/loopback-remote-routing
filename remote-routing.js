@@ -15,6 +15,13 @@ module.exports = function(Model, options) {
 
     remoteMethod.call(Model, name, config);
 
+    //normalize method.name, make it follow the conventional naming rule
+    if (!/prototype/.test(name) && !/^@/.test(name)) {
+      name = '@'+name;
+    } else if (/^prototype/.test(name)) {
+      name = name.replace(/^prototype\./, '');
+    }
+
     if (options.only && options.only.length) {
       disable = !_.includes(options.only, name);
     }
